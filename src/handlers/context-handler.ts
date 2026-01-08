@@ -1,0 +1,52 @@
+import type { OrchestrationContext, OrchestrationHandler } from '../core/types'
+import type { ContextOptimizer } from '../context/optimizer'
+import { consoleLogger, type Logger } from '../utils/logger'
+
+export interface ContextHandlerConfig {
+  optimizer: ContextOptimizer
+  getTopics?: (context: OrchestrationContext) => string[]
+  isFirstMessage?: (context: OrchestrationContext) => boolean
+  outputKey?: string
+  logger?: Logger
+}
+
+export function createContextHandler(
+  config: ContextHandlerConfig
+): OrchestrationHandler {
+  const logger = config.logger || consoleLogger
+  const outputKey = config.outputKey || 'promptContext'
+
+  return async (context: OrchestrationContext) => {
+    try {
+      const topics = config.getTopics?.(context) || []
+      const isFirstMessage =
+        config.isFirstMessage?.(context) ?? context.request.messages.length === 1
+
+      const result = config.optimizer.build(topics, isFirstMessage)
+
+      logger.debug(
+        {
+          topics,
+          isFirstMessage,
+          sectionsIncluded: result.sectionsIncluded,
+          tokenEstimate: result.tokenEstimate,
+        },
+        'Context built successfully'
+      )
+
+      return {
+        ...context,
+        [outputKey]: result,
+      }
+    } catch (error) {
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'Context building failed'
+      )
+
+      return context
+    }
+  }
+}
