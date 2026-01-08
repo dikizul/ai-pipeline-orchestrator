@@ -1,7 +1,3 @@
-/**
- * Generic logger interface
- * Compatible with popular loggers (pino, winston, console)
- */
 export interface Logger {
   debug(obj: unknown, msg?: string): void
   info(obj: unknown, msg?: string): void
@@ -9,10 +5,6 @@ export interface Logger {
   error(obj: unknown, msg?: string): void
 }
 
-/**
- * Default console-based logger implementation
- * Simple fallback for when no logger is provided
- */
 export const consoleLogger: Logger = {
   debug: (obj, msg) => {
     if (msg) {
@@ -44,10 +36,6 @@ export const consoleLogger: Logger = {
   },
 }
 
-/**
- * No-op logger for silent operation
- * Useful for testing or when logging is not desired
- */
 export const silentLogger: Logger = {
   debug: () => {},
   info: () => {},
