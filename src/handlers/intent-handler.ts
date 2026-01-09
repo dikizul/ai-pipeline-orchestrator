@@ -24,7 +24,7 @@ export interface IntentHandlerConfig {
 
 /**
  * Creates intent detection handler with hybrid classification.
- * Uses keyword matching first, falls back to LLM if confidence is low.
+ * Uses keyword matching first, falls back to LLM if confidence is low and LLM is enabled.
  * 
  * Keyword matching algorithm:
  * - Scoring: Each keyword match adds points equal to the keyword's word count.

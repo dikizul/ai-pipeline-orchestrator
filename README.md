@@ -484,6 +484,26 @@ See the `examples/` directory for complete working examples:
 - **[`complete-chatbot.ts`](./examples/complete-chatbot.ts)** - End-to-end with AI generation
 - **[`streaming-chatbot.ts`](./examples/streaming-chatbot.ts)** - Real-time streaming responses
 - **[`all-handlers.ts`](./examples/all-handlers.ts)** - Production pipeline using ALL handlers (rate limiting, moderation, intent, context, AI)
+- **[`chat-cli.ts`](./examples/chat-cli.ts)** - 🆕 Interactive chat CLI with multi-turn conversations
+
+### Try the Interactive Chat CLI
+
+The fastest way to experience the package is with the interactive chat CLI:
+
+```bash
+# Setup
+cp .env.example .env
+# Edit .env with your provider and API key
+
+# Run
+npx tsx examples/chat-cli.ts
+```
+
+Features:
+- Multi-turn conversations with memory
+- Real-time streaming responses
+- Intent detection and context optimization
+- Type `exit` or `quit` to end
 
 ### Running Examples
 
