@@ -73,7 +73,7 @@ const contextOptimizer = new ContextOptimizer({
 })
 
 async function main() {
-  const provider = process.env.AI_PROVIDER as 'anthropic' | 'openai' | 'ollama'
+  const provider = process.env.AI_PROVIDER as 'anthropic' | 'openai' | 'deepseek' | 'ollama'
   const model = process.env.AI_MODEL
 
   if (!provider) {
@@ -81,16 +81,20 @@ async function main() {
     console.log('Choose a provider and add to .env file:\n')
     console.log('Anthropic: AI_PROVIDER=anthropic')
     console.log('OpenAI:    AI_PROVIDER=openai')
+    console.log('DeepSeek:  AI_PROVIDER=deepseek')
     console.log('Ollama:    AI_PROVIDER=ollama\n')
     process.exit(1)
   }
 
   if (!model) {
     console.error('❌ Error: AI_MODEL is required\n')
-    console.log('Add to .env file based on your provider:\n')
-    console.log('Anthropic: AI_MODEL=claude-3-5-haiku-20241022')
-    console.log('OpenAI:    AI_MODEL=gpt-4o-mini')
-    console.log('Ollama:    AI_MODEL=llama3.2\n')
+    console.log('Add to .env file with your chosen model:\n')
+    console.log('  AI_MODEL=your-model-name\n')
+    console.log('Examples by provider:')
+    console.log('  Anthropic: claude-3-5-haiku-20241022, claude-3-5-sonnet-20241022')
+    console.log('  OpenAI:    gpt-4o-mini, gpt-4o')
+    console.log('  DeepSeek:  deepseek-chat (cloud API)')
+    console.log('  Ollama:    Run "ollama list" to see your installed models\n')
     process.exit(1)
   }
 
@@ -109,6 +113,13 @@ async function main() {
     if (!apiKey) {
       console.error('❌ Error: OPENAI_API_KEY is required for OpenAI provider')
       console.log('Add to .env file: OPENAI_API_KEY=your-key\n')
+      process.exit(1)
+    }
+  } else if (provider === 'deepseek') {
+    apiKey = process.env.DEEPSEEK_API_KEY
+    if (!apiKey) {
+      console.error('❌ Error: DEEPSEEK_API_KEY is required for DeepSeek provider')
+      console.log('Add to .env file: DEEPSEEK_API_KEY=your-key\n')
       process.exit(1)
     }
   } else if (provider === 'ollama') {

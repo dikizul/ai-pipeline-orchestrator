@@ -98,12 +98,34 @@ const aiHandler = createAIHandler({
 })
 ```
 
+### DeepSeek (Cloud API)
+
+```typescript
+const classifier = new LLMIntentClassifier({
+  provider: 'deepseek',
+  model: 'deepseek-chat',
+  apiKey: process.env.DEEPSEEK_API_KEY,
+  categories: ['greeting', 'help'],
+  categoryDescriptions: { greeting: 'User says hello', help: 'User needs help' },
+})
+
+const aiHandler = createAIHandler({
+  provider: 'deepseek',
+  model: 'deepseek-chat',
+  apiKey: process.env.DEEPSEEK_API_KEY,
+})
+```
+
+**Note:** For DeepSeek models running locally via Ollama, use the `ollama` provider instead (see below).
+
 ### Ollama (Local Models)
+
+Run models locally including DeepSeek, Llama, etc.
 
 ```typescript
 const classifier = new LLMIntentClassifier({
   provider: 'ollama',
-  model: 'llama3.2',
+  model: 'deepseek-r1', // or 'llama3.2', 'mistral', etc.
   baseURL: 'http://localhost:11434', // Optional, this is the default
   categories: ['greeting', 'help'],
   categoryDescriptions: { greeting: 'User says hello', help: 'User needs help' },
@@ -111,14 +133,16 @@ const classifier = new LLMIntentClassifier({
 
 const aiHandler = createAIHandler({
   provider: 'ollama',
-  model: 'llama3.2',
+  model: 'deepseek-r1', // or 'llama3.2', 'mistral', etc.
   baseURL: 'http://localhost:11434', // Optional, this is the default
 })
 ```
 
+**Available models:** Run `ollama list` to see installed models, or `ollama pull deepseek-r1` to download DeepSeek.
+
 ## Quick Start
 
-Here's a minimal chatbot in ~30 lines (works with Anthropic, OpenAI, or Ollama):
+Here's a minimal chatbot in ~30 lines (works with Anthropic, OpenAI, DeepSeek, or Ollama):
 
 ```typescript
 import {
@@ -539,7 +563,8 @@ npx tsx examples/all-handlers.ts
 **Supported Providers:**
 - **Anthropic (Claude):** `AI_PROVIDER=anthropic` - Get key at [console.anthropic.com](https://console.anthropic.com)
 - **OpenAI (GPT):** `AI_PROVIDER=openai` - Get key at [platform.openai.com](https://platform.openai.com)
-- **Ollama (Local):** `AI_PROVIDER=ollama` - Free, runs locally. Get at [ollama.com](https://ollama.com)
+- **DeepSeek (Cloud):** `AI_PROVIDER=deepseek` - Get key at [platform.deepseek.com](https://platform.deepseek.com)
+- **Ollama (Local):** `AI_PROVIDER=ollama` - Free, runs locally. Supports DeepSeek, Llama, Mistral, etc. Get at [ollama.com](https://ollama.com)
 
 **Environment Variables:**
 - `AI_PROVIDER` - Main AI provider (required)
@@ -548,6 +573,7 @@ npx tsx examples/all-handlers.ts
 - `INTENT_MODEL` - Intent classifier model (optional, defaults to AI_MODEL)
 - `ANTHROPIC_API_KEY` - Required if using Anthropic
 - `OPENAI_API_KEY` - Required if using OpenAI
+- `DEEPSEEK_API_KEY` - Required if using DeepSeek
 - `OLLAMA_BASE_URL` - Optional for Ollama (defaults to http://localhost:11434)
 
 ## API Reference

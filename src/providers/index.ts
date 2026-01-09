@@ -1,5 +1,5 @@
 export interface ProviderConfig {
-  provider: 'anthropic' | 'openai' | 'ollama'
+  provider: 'anthropic' | 'openai' | 'ollama' | 'deepseek'
   model: string
   apiKey?: string
   baseURL?: string
@@ -19,6 +19,15 @@ export async function createModel(config: ProviderConfig): Promise<any> {
     const { createOpenAI } = await import('@ai-sdk/openai')
     const openai = createOpenAI({ apiKey: config.apiKey })
     return openai(config.model)
+  }
+
+  if (config.provider === 'deepseek') {
+    const { createOpenAI } = await import('@ai-sdk/openai')
+    const deepseek = createOpenAI({
+      apiKey: config.apiKey,
+      baseURL: config.baseURL ?? 'https://api.deepseek.com',
+    })
+    return deepseek(config.model)
   }
 
   if (config.provider === 'ollama') {
