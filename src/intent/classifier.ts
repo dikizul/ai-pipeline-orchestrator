@@ -56,8 +56,6 @@ export function detectIntent(
     intent: bestResult.intent,
     confidence,
     matchedKeywords: bestResult.keywords,
-    secondBestIntent: secondBestResult?.intent,
-    margin,
   }
 
   if (metadata) {

@@ -174,9 +174,33 @@ const myHandler: OrchestrationHandler = async (context) => {
 }
 ```
 
+## Complete Example with AI Generation
+
+```typescript
+import {
+  executeOrchestration,
+  createModerationHandler,
+  createIntentHandler,
+  createContextHandler,
+  createAIHandler,
+} from 'ai-pipeline-orchestrator'
+
+const result = await executeOrchestration(context, [
+  { name: 'moderation', handler: createModerationHandler() },
+  { name: 'intent', handler: createIntentHandler({ classifier }) },
+  { name: 'context', handler: createContextHandler({ optimizer }) },
+  { name: 'ai', handler: createAIHandler({ model: 'claude-3-5-haiku-20241022' }) },
+])
+
+if (result.success) {
+  console.log('AI Response:', result.context.aiResponse)
+}
+```
+
 ## Examples
 
-See [`examples/basic-chatbot.ts`](./examples/basic-chatbot.ts) for a complete working example.
+- [`examples/basic-chatbot.ts`](./examples/basic-chatbot.ts) - Basic orchestration without AI
+- [`examples/complete-chatbot.ts`](./examples/complete-chatbot.ts) - Complete end-to-end with AI generation
 
 ## API Documentation
 
@@ -205,6 +229,7 @@ See [`examples/basic-chatbot.ts`](./examples/basic-chatbot.ts) for a complete wo
 - `createContextHandler(config)` - Context building handler
 - `createRateLimitHandler(config)` - Rate limiting handler
 - `createModerationHandler(config)` - Content moderation handler
+- `createAIHandler(config)` - AI generation handler (optional, requires AI SDK)
 
 ## License
 

@@ -87,14 +87,16 @@ export function createIntentHandler(
       const llmResult = await config.llmFallback.classifier.classify(content)
 
       if (config.onFallback) {
-        config.onFallback({
-          message: content,
-          keywordIntent: keywordResult.intent,
-          keywordConfidence: keywordResult.confidence,
-          llmIntent: llmResult.intent,
-          llmConfidence: llmResult.confidence,
-          matchedKeywords: keywordResult.matchedKeywords,
-        }).catch((err) => {
+        Promise.resolve(
+          config.onFallback({
+            message: content,
+            keywordIntent: keywordResult.intent,
+            keywordConfidence: keywordResult.confidence,
+            llmIntent: llmResult.intent,
+            llmConfidence: llmResult.confidence,
+            matchedKeywords: keywordResult.matchedKeywords,
+          })
+        ).catch((err: unknown) => {
           logger.error({ error: err }, 'Failed to log intent fallback')
         })
       }

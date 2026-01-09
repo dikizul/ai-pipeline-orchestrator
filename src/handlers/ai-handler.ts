@@ -1,0 +1,89 @@
+import type { OrchestrationContext, OrchestrationHandler } from '../core/types'
+import { consoleLogger, type Logger } from '../utils/logger'
+
+export interface AIHandlerConfig {
+  model: string
+  apiKey?: string
+  maxTokens?: number
+  temperature?: number
+  getSystemPrompt?: (context: OrchestrationContext) => string
+  outputKey?: string
+  logger?: Logger
+}
+
+export function createAIHandler(config: AIHandlerConfig): OrchestrationHandler {
+  const logger = config.logger || consoleLogger
+  const outputKey = config.outputKey || 'aiResponse'
+
+  return async (context: OrchestrationContext) => {
+    try {
+      const { createAnthropic } = await import('@ai-sdk/anthropic')
+      const { generateText } = await import('ai')
+
+      const systemPrompt = config.getSystemPrompt
+        ? config.getSystemPrompt(context)
+        : (context.promptContext as { systemPrompt?: string })?.systemPrompt || ''
+
+      if (!systemPrompt) {
+        logger.warn({}, 'No system prompt found, using empty prompt')
+      }
+
+      const anthropic = createAnthropic({ apiKey: config.apiKey })
+
+      logger.debug(
+        {
+          model: config.model,
+          messageCount: context.request.messages.length,
+        },
+        'Calling AI model'
+      )
+
+      const startTime = Date.now()
+
+      const response = await generateText({
+        model: anthropic(config.model),
+        system: systemPrompt,
+        messages: context.request.messages,
+        maxTokens: config.maxTokens,
+        temperature: config.temperature,
+      })
+
+      const duration = Date.now() - startTime
+
+      logger.info(
+        {
+          durationMs: duration,
+          finishReason: response.finishReason,
+          usage: response.usage,
+        },
+        'AI generation completed'
+      )
+
+      return {
+        ...context,
+        [outputKey]: {
+          text: response.text,
+          finishReason: response.finishReason,
+          usage: response.usage,
+        },
+      }
+    } catch (error) {
+      logger.error(
+        {
+          error: error instanceof Error ? error.message : String(error),
+        },
+        'AI generation failed'
+      )
+
+      return {
+        ...context,
+        error: {
+          message: 'Failed to generate AI response. Please try again.',
+          statusCode: 500,
+          step: 'aiGeneration',
+          details: error instanceof Error ? error.message : undefined,
+        },
+      }
+    }
+  }
+}

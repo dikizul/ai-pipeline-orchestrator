@@ -23,34 +23,34 @@
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./core": {
+      "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.mjs",
-      "require": "./dist/core/index.js",
-      "types": "./dist/core/index.d.ts"
+      "require": "./dist/core/index.js"
     },
     "./intent": {
+      "types": "./dist/intent/index.d.ts",
       "import": "./dist/intent/index.mjs",
-      "require": "./dist/intent/index.js",
-      "types": "./dist/intent/index.d.ts"
+      "require": "./dist/intent/index.js"
     },
     "./context": {
+      "types": "./dist/context/index.d.ts",
       "import": "./dist/context/index.mjs",
-      "require": "./dist/context/index.js",
-      "types": "./dist/context/index.d.ts"
+      "require": "./dist/context/index.js"
     },
     "./handlers": {
+      "types": "./dist/handlers/index.d.ts",
       "import": "./dist/handlers/index.mjs",
-      "require": "./dist/handlers/index.js",
-      "types": "./dist/handlers/index.d.ts"
+      "require": "./dist/handlers/index.js"
     },
     "./utils": {
+      "types": "./dist/utils/index.d.ts",
       "import": "./dist/utils/index.mjs",
-      "require": "./dist/utils/index.js",
-      "types": "./dist/utils/index.d.ts"
+      "require": "./dist/utils/index.js"
     }
   },
   "files": [
@@ -80,9 +80,11 @@
     }
   },
   "devDependencies": {
+    "@ai-sdk/anthropic": "^3.0.9",
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "tsup": "^8.0.0"
+    "ai": "^6.0.23",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
   },
   "engines": {
     "node": ">=18.0.0"
