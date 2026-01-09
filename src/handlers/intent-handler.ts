@@ -79,7 +79,10 @@ export function createIntentHandler(config: IntentHandlerConfig): OrchestrationH
 
         return {
           ...context,
-          [contextKey]: keywordResult,
+          [contextKey]: {
+            ...keywordResult,
+            method: 'keyword',
+          },
         }
       }
 
@@ -93,6 +96,37 @@ export function createIntentHandler(config: IntentHandlerConfig): OrchestrationH
       )
 
       const llmResult = await config.llmFallback.classifier.classify(content)
+
+      // If LLM classification failed (0 confidence with error message), fall back to keyword result
+      const hasError =
+        llmResult.reasoning &&
+        (llmResult.reasoning.includes('failed') ||
+          llmResult.reasoning.includes('Error') ||
+          llmResult.reasoning.includes('Unsupported') ||
+          llmResult.reasoning.includes('not available'))
+
+      if (llmResult.confidence === 0 && hasError) {
+        logger.warn(
+          {
+            error: llmResult.reasoning,
+            fallingBackTo: 'keyword',
+          },
+          'LLM classification failed - using keyword result'
+        )
+
+        return {
+          ...context,
+          [contextKey]: {
+            ...keywordResult,
+            method: 'keyword',
+            metadata: {
+              ...keywordResult.metadata,
+              llmFallbackAttempted: true,
+              llmError: llmResult.reasoning,
+            },
+          },
+        }
+      }
 
       if (config.onFallback) {
         Promise.resolve(
@@ -129,6 +163,9 @@ export function createIntentHandler(config: IntentHandlerConfig): OrchestrationH
             classificationMethod: 'llm',
             reasoning: llmResult.reasoning,
           },
+          method: 'llm',
+          llmTokens: llmResult.usage?.totalTokens || 0,
+          usage: llmResult.usage,
         },
       }
     } catch (error) {

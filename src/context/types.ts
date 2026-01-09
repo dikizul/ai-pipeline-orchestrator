@@ -20,5 +20,7 @@ export interface ContextConfig {
 export interface ContextResult {
   systemPrompt: string
   sectionsIncluded: string[]
+  totalSections?: number
   tokenEstimate?: number
+  maxTokenEstimate?: number
 }

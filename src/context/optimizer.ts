@@ -29,12 +29,19 @@ function buildContext(
 
   const systemPrompt = selectedSections.map(section => section.content).join('\n\n')
 
+  // Calculate token estimates
   const tokenEstimate = Math.ceil(systemPrompt.length / 4)
+
+  // Calculate what tokens WOULD be if all sections were loaded (for savings calculation)
+  const allSectionsPrompt = sections.map(section => section.content).join('\n\n')
+  const maxTokenEstimate = Math.ceil(allSectionsPrompt.length / 4)
 
   return {
     systemPrompt,
     sectionsIncluded: selectedSections.map(s => s.id),
+    totalSections: sections.length,
     tokenEstimate,
+    maxTokenEstimate,
   }
 }
 

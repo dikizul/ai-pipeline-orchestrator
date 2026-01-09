@@ -1,14 +1,44 @@
 # ai-pipeline-orchestrator
 
-Build AI chatbots and agents using composable handler pipelines. Handles the messy parts: intent detection, context management, token optimization, rate limiting, and moderation.
+Build production-ready AI chatbots with composable handler pipelines. Handles the messy parts: intent detection, context optimization, token management, rate limiting, and moderation.
 
-## What's inside
+## 🚀 Try the Demo
+
+```bash
+# 1. Clone and install
+git clone https://github.com/emmanuel-adu/ai-pipeline-orchestrator.git
+cd ai-pipeline-orchestrator
+npm install
+
+# 2. Configure your AI provider
+echo "AI_PROVIDER=anthropic" > .env
+echo "AI_MODEL=claude-3-5-haiku-20241022" >> .env
+echo "ANTHROPIC_API_KEY=your-key-here" >> .env
+
+# 3. Run the interactive demo
+npm run example:chat
+```
+
+**Get API keys:** [Anthropic](https://console.anthropic.com) · [OpenAI](https://platform.openai.com) · [DeepSeek](https://platform.deepseek.com) · Or use [Ollama](https://ollama.com) (free, local)
+
+The demo showcases ALL features in real-time:
+- ✅ Content moderation
+- ✅ Rate limiting
+- ✅ Hybrid intent classification (keyword → LLM fallback)
+- ✅ Dynamic context optimization (30-50% token savings)
+- ✅ Multi-provider support
+- ✅ Real-time streaming
+- ✅ Token usage breakdown
+
+---
+
+## What's Inside
 
 - **Sequential pipelines** - Compose handlers that run in order with automatic error handling
 - **Hybrid intent detection** - Keyword matching (fast, free) with optional LLM fallback
 - **Context optimization** - Load only relevant context based on intent, reduce tokens 30-50%
 - **Multi-provider** - Works with Claude, GPT, DeepSeek, or local Ollama models
-- **Handlers** - Rate limiting, moderation, intent, context, AI generation
+- **Production-ready** - Rate limiting, moderation, logging, error handling built-in
 - **TypeScript** - Full type safety with minimal dependencies (just Zod)
 
 ## Install
@@ -30,7 +60,7 @@ npm install @ai-sdk/openai ai
 npm install ollama-ai-provider ai
 ```
 
-## Quick start
+## Quick Start
 
 ```typescript
 import { executeOrchestration, createAIHandler } from 'ai-pipeline-orchestrator'
@@ -56,23 +86,6 @@ const result = await executeOrchestration(context, [
 if (result.success) {
   console.log(result.context.aiResponse.text)
 }
-```
-
-## Try it out
-
-```bash
-# Setup
-cp .env.example .env
-# Edit .env with your provider + API key
-
-# Interactive chat CLI
-npm run example:chat
-
-# Or try other examples
-npm run example:basic      # Intent + context (no AI)
-npm run example:complete   # Full pipeline
-npm run example:streaming  # Streaming responses
-npm run example:all        # All handlers
 ```
 
 ## Providers

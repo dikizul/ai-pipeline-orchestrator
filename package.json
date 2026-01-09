@@ -19,44 +19,44 @@
     "type": "git",
     "url": "https://github.com/emmanuel-adu/ai-pipeline-orchestrator"
   },
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js"
+      "require": "./dist/index.cjs"
     },
     "./core": {
       "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.mjs",
-      "require": "./dist/core/index.js"
+      "require": "./dist/core/index.cjs"
     },
     "./intent": {
       "types": "./dist/intent/index.d.ts",
       "import": "./dist/intent/index.mjs",
-      "require": "./dist/intent/index.js"
+      "require": "./dist/intent/index.cjs"
     },
     "./context": {
       "types": "./dist/context/index.d.ts",
       "import": "./dist/context/index.mjs",
-      "require": "./dist/context/index.js"
+      "require": "./dist/context/index.cjs"
     },
     "./handlers": {
       "types": "./dist/handlers/index.d.ts",
       "import": "./dist/handlers/index.mjs",
-      "require": "./dist/handlers/index.js"
+      "require": "./dist/handlers/index.cjs"
     },
     "./providers": {
       "types": "./dist/providers/index.d.ts",
       "import": "./dist/providers/index.mjs",
-      "require": "./dist/providers/index.js"
+      "require": "./dist/providers/index.cjs"
     },
     "./utils": {
       "types": "./dist/utils/index.d.ts",
       "import": "./dist/utils/index.mjs",
-      "require": "./dist/utils/index.js"
+      "require": "./dist/utils/index.cjs"
     }
   },
   "files": [

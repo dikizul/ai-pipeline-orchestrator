@@ -16,6 +16,7 @@ async function classifyWithLLM(
   intent: string
   confidence: number
   reasoning?: string
+  usage?: any
 }> {
   try {
     const { generateObject } = await import('ai')
@@ -36,14 +37,19 @@ async function classifyWithLLM(
 
     const model = await createModel(config)
 
-    const { object } = await generateObject({
+    const result = await generateObject({
       model,
       schema,
       prompt,
       temperature: config.temperature ?? 0.3,
     })
 
-    return object
+    const usage = await result.usage
+
+    return {
+      ...result.object,
+      usage,
+    }
   } catch (error) {
     return {
       intent: 'general',
@@ -74,6 +80,7 @@ export class LLMIntentClassifier {
     intent: string
     confidence: number
     reasoning?: string
+    usage?: any
   }> {
     return classifyWithLLM(message, this.config)
   }

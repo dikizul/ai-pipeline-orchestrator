@@ -15,11 +15,8 @@ export default defineConfig({
   splitting: false,
   sourcemap: true,
   clean: true,
-  external: [
-    '@ai-sdk/anthropic',
-    '@ai-sdk/openai',
-    'ollama-ai-provider',
-    'ai',
-    'zod',
-  ],
+  outExtension: ({ format }) => ({
+    js: format === 'esm' ? '.mjs' : '.cjs',
+  }),
+  external: ['@ai-sdk/anthropic', '@ai-sdk/openai', 'ollama-ai-provider', 'ai', 'zod'],
 })
