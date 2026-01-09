@@ -8,22 +8,20 @@
  * - Context optimization
  * - AI generation
  *
- * SETUP: Choose your provider and configure environment variables
+ * SETUP: Configure environment variables in .env file
  *
- * Anthropic (Claude):
+ * Simple (same provider for intent and AI):
  *   echo "AI_PROVIDER=anthropic" > .env
- *   echo "ANTHROPIC_API_KEY=your-key" >> .env
  *   echo "AI_MODEL=claude-3-5-haiku-20241022" >> .env
+ *   echo "ANTHROPIC_API_KEY=your-key" >> .env
  *
- * OpenAI (GPT):
- *   echo "AI_PROVIDER=openai" > .env
- *   echo "OPENAI_API_KEY=your-key" >> .env
- *   echo "AI_MODEL=gpt-4o-mini" >> .env
- *
- * Ollama (Local):
- *   echo "AI_PROVIDER=ollama" > .env
- *   echo "AI_MODEL=llama3.2" >> .env
- *   echo "OLLAMA_BASE_URL=http://localhost:11434" >> .env
+ * Advanced (different providers for intent vs AI):
+ *   echo "AI_PROVIDER=anthropic" > .env
+ *   echo "AI_MODEL=claude-3-5-sonnet-20241022" >> .env
+ *   echo "INTENT_PROVIDER=openai" >> .env
+ *   echo "INTENT_MODEL=gpt-4o-mini" >> .env
+ *   echo "ANTHROPIC_API_KEY=your-anthropic-key" >> .env
+ *   echo "OPENAI_API_KEY=your-openai-key" >> .env
  */
 import 'dotenv/config'
 import {
@@ -138,19 +136,18 @@ const contextOptimizer = new ContextOptimizer({
 })
 
 async function main() {
-  const provider = process.env.AI_PROVIDER as 'anthropic' | 'openai' | 'ollama'
-  const model = process.env.AI_MODEL
+  const aiProvider = process.env.AI_PROVIDER as 'anthropic' | 'openai' | 'ollama'
+  const aiModel = process.env.AI_MODEL
+  const intentProvider = (process.env.INTENT_PROVIDER ?? aiProvider) as 'anthropic' | 'openai' | 'ollama'
+  const intentModel = process.env.INTENT_MODEL ?? aiModel
 
-  if (!provider) {
+  if (!aiProvider) {
     console.error('❌ Error: AI_PROVIDER is required\n')
-    console.log('Choose a provider and add to .env file:\n')
-    console.log('Anthropic: AI_PROVIDER=anthropic')
-    console.log('OpenAI:    AI_PROVIDER=openai')
-    console.log('Ollama:    AI_PROVIDER=ollama\n')
+    console.log('Add to .env file: AI_PROVIDER=anthropic|openai|ollama\n')
     process.exit(1)
   }
 
-  if (!model) {
+  if (!aiModel) {
     console.error('❌ Error: AI_MODEL is required\n')
     console.log('Add to .env file based on your provider:\n')
     console.log('Anthropic: AI_MODEL=claude-3-5-haiku-20241022')
@@ -159,32 +156,39 @@ async function main() {
     process.exit(1)
   }
 
-  let apiKey: string | undefined
-  let baseURL: string | undefined
+  const getProviderConfig = (provider: 'anthropic' | 'openai' | 'ollama') => {
+    let apiKey: string | undefined
+    let baseURL: string | undefined
 
-  if (provider === 'anthropic') {
-    apiKey = process.env.ANTHROPIC_API_KEY
-    if (!apiKey) {
-      console.error('❌ Error: ANTHROPIC_API_KEY is required for Anthropic provider')
-      console.log('Add to .env file: ANTHROPIC_API_KEY=your-key\n')
-      process.exit(1)
+    if (provider === 'anthropic') {
+      apiKey = process.env.ANTHROPIC_API_KEY
+      if (!apiKey) {
+        console.error(`❌ Error: ANTHROPIC_API_KEY is required for Anthropic provider`)
+        console.log('Add to .env file: ANTHROPIC_API_KEY=your-key\n')
+        process.exit(1)
+      }
+    } else if (provider === 'openai') {
+      apiKey = process.env.OPENAI_API_KEY
+      if (!apiKey) {
+        console.error(`❌ Error: OPENAI_API_KEY is required for OpenAI provider`)
+        console.log('Add to .env file: OPENAI_API_KEY=your-key\n')
+        process.exit(1)
+      }
+    } else if (provider === 'ollama') {
+      baseURL = process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434'
     }
-  } else if (provider === 'openai') {
-    apiKey = process.env.OPENAI_API_KEY
-    if (!apiKey) {
-      console.error('❌ Error: OPENAI_API_KEY is required for OpenAI provider')
-      console.log('Add to .env file: OPENAI_API_KEY=your-key\n')
-      process.exit(1)
-    }
-  } else if (provider === 'ollama') {
-    baseURL = process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434'
+
+    return { apiKey, baseURL }
   }
 
+  const aiConfig = getProviderConfig(aiProvider)
+  const intentConfig = getProviderConfig(intentProvider)
+
   const llmClassifier = new LLMIntentClassifier({
-    provider,
-    model,
-    apiKey,
-    baseURL,
+    provider: intentProvider,
+    model: intentModel,
+    apiKey: intentConfig.apiKey,
+    baseURL: intentConfig.baseURL,
     categories: ['greeting', 'help', 'pricing', 'technical', 'general'],
     categoryDescriptions: {
       greeting: 'User is greeting or saying hello',
@@ -249,10 +253,10 @@ async function main() {
       {
         name: 'ai',
         handler: createAIHandler({
-          provider,
-          model,
-          apiKey,
-          baseURL,
+          provider: aiProvider,
+          model: aiModel,
+          apiKey: aiConfig.apiKey,
+          baseURL: aiConfig.baseURL,
           temperature: 0.7,
           maxTokens: 1024,
           getSystemPrompt: (ctx) => {
