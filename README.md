@@ -265,10 +265,40 @@ if (result.success) {
 }
 ```
 
+## Streaming Support
+
+For real-time response delivery, use `createStreamingAIHandler`:
+
+```typescript
+import {
+  executeOrchestration,
+  createStreamingAIHandler,
+} from 'ai-pipeline-orchestrator'
+
+const result = await executeOrchestration(context, [
+  {
+    name: 'streaming-ai',
+    handler: createStreamingAIHandler({
+      provider: 'anthropic',
+      model: 'claude-3-5-sonnet-20241022',
+      apiKey: process.env.ANTHROPIC_API_KEY,
+      onChunk: (chunk) => {
+        // Send chunk to client (SSE, WebSocket, etc.)
+        process.stdout.write(chunk)
+      },
+    }),
+  },
+])
+
+// Full response is still available after streaming completes
+console.log('Full text:', result.context.aiResponse.text)
+```
+
 ## Examples
 
 - [`examples/basic-chatbot.ts`](./examples/basic-chatbot.ts) - Basic orchestration without AI
 - [`examples/complete-chatbot.ts`](./examples/complete-chatbot.ts) - Complete end-to-end with AI generation
+- [`examples/streaming-chatbot.ts`](./examples/streaming-chatbot.ts) - Streaming responses in real-time
 
 ## API Documentation
 
@@ -297,7 +327,8 @@ if (result.success) {
 - `createContextHandler(config)` - Context building handler
 - `createRateLimitHandler(config)` - Rate limiting handler
 - `createModerationHandler(config)` - Content moderation handler
-- `createAIHandler(config)` - AI generation handler (optional, requires AI SDK)
+- `createAIHandler(config)` - AI generation handler
+- `createStreamingAIHandler(config)` - Streaming AI generation handler with real-time chunks
 
 ## License
 
