@@ -90,7 +90,9 @@ async function main() {
       {
         name: 'ai',
         handler: createAIHandler({
+          provider: 'anthropic',
           model: 'claude-3-5-haiku-20241022',
+          apiKey: process.env.ANTHROPIC_API_KEY,
           temperature: 0.7,
           maxTokens: 1024,
           getSystemPrompt: (ctx) => {

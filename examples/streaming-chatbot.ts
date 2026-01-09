@@ -28,9 +28,9 @@ async function main() {
       name: 'streaming-ai',
       handler: createStreamingAIHandler({
         provider: 'anthropic',
-        model: 'claude-3-5-sonnet-20241022',
+        model: 'claude-3-5-haiku-20241022',
         apiKey: process.env.ANTHROPIC_API_KEY,
-        getSystemPrompt: () => 'You are a creative storyteller.',
+        getSystemPrompt: () => 'You are a creative storyteller. Keep your story brief (2-3 sentences).',
         onChunk: (chunk) => {
           process.stdout.write(chunk)
         },
@@ -40,8 +40,9 @@ async function main() {
 
   if (result.success) {
     console.log('\n\n--- Streaming complete ---')
-    console.log('Full text:', result.context.aiResponse?.text)
-    console.log('Usage:', result.context.aiResponse?.usage)
+    const aiResponse = result.context.aiResponse as { text?: string; usage?: any }
+    console.log('Full text length:', aiResponse?.text?.length || 0, 'characters')
+    console.log('Usage:', aiResponse?.usage)
   } else {
     console.error('Error:', result.error)
   }
