@@ -118,7 +118,7 @@ const aiHandler = createAIHandler({
 
 ## Quick Start
 
-Here's a minimal chatbot in ~30 lines:
+Here's a minimal chatbot in ~30 lines (works with Anthropic, OpenAI, or Ollama):
 
 ```typescript
 import {
@@ -137,7 +137,7 @@ const result = await executeOrchestration(context, [
   {
     name: 'ai',
     handler: createAIHandler({
-      provider: 'anthropic',
+      provider: 'anthropic', // or 'openai' or 'ollama'
       model: 'claude-3-5-haiku-20241022',
       apiKey: process.env.ANTHROPIC_API_KEY,
       getSystemPrompt: () => 'You are a helpful assistant.',
@@ -485,11 +485,50 @@ See the `examples/` directory for complete working examples:
 - **[`streaming-chatbot.ts`](./examples/streaming-chatbot.ts)** - Real-time streaming responses
 - **[`all-handlers.ts`](./examples/all-handlers.ts)** - Production pipeline using ALL handlers (rate limiting, moderation, intent, context, AI)
 
-Run any example:
+### Running Examples
+
+All examples support multiple AI providers. Configure via `.env` file:
+
+**Basic Setup (same provider for all tasks):**
+```bash
+cp .env.example .env
+# Edit .env and set:
+# AI_PROVIDER=anthropic
+# AI_MODEL=claude-3-5-haiku-20241022
+# ANTHROPIC_API_KEY=your-key
+
+npx tsx examples/streaming-chatbot.ts
+```
+
+**Advanced Setup (different providers for intent vs AI):**
+
+Use a cheaper/faster model for intent classification and a more capable model for responses:
 
 ```bash
+# Edit .env:
+# AI_PROVIDER=anthropic
+# AI_MODEL=claude-3-5-sonnet-20241022
+# INTENT_PROVIDER=openai
+# INTENT_MODEL=gpt-4o-mini
+# ANTHROPIC_API_KEY=your-anthropic-key
+# OPENAI_API_KEY=your-openai-key
+
 npx tsx examples/all-handlers.ts
 ```
+
+**Supported Providers:**
+- **Anthropic (Claude):** `AI_PROVIDER=anthropic` - Get key at [console.anthropic.com](https://console.anthropic.com)
+- **OpenAI (GPT):** `AI_PROVIDER=openai` - Get key at [platform.openai.com](https://platform.openai.com)
+- **Ollama (Local):** `AI_PROVIDER=ollama` - Free, runs locally. Get at [ollama.com](https://ollama.com)
+
+**Environment Variables:**
+- `AI_PROVIDER` - Main AI provider (required)
+- `AI_MODEL` - Main AI model (required)
+- `INTENT_PROVIDER` - Intent classifier provider (optional, defaults to AI_PROVIDER)
+- `INTENT_MODEL` - Intent classifier model (optional, defaults to AI_MODEL)
+- `ANTHROPIC_API_KEY` - Required if using Anthropic
+- `OPENAI_API_KEY` - Required if using OpenAI
+- `OLLAMA_BASE_URL` - Optional for Ollama (defaults to http://localhost:11434)
 
 ## API Reference
 
