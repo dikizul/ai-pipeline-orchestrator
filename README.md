@@ -176,31 +176,99 @@ const result = await executeOrchestration(
 
 Pipeline stops immediately if any handler sets `context.error` or throws.
 
-### Intent Classification
+## Handler Configuration Guide
+
+All available handlers with complete configuration examples:
+
+### Content Moderation
+
+Filter spam and profanity:
+
+```typescript
+import { createModerationHandler } from 'ai-pipeline-orchestrator'
+
+const moderationHandler = createModerationHandler({
+  spamPatterns: ['buy now', 'click here', 'limited time'],
+  customRules: [
+    {
+      pattern: /\b(badword1|badword2)\b/i,
+      reason: 'Contains prohibited content',
+    },
+  ],
+})
+```
+
+### Rate Limiting
+
+Implement custom rate limiting:
+
+```typescript
+import { createRateLimitHandler, type RateLimiter } from 'ai-pipeline-orchestrator'
+
+// Create your own rate limiter (e.g., using Upstash, Redis, etc.)
+const rateLimiter: RateLimiter = {
+  check: async (identifier) => {
+    // Your rate limiting logic
+    const allowed = await checkRateLimit(identifier)
+    return {
+      allowed,
+      retryAfter: allowed ? undefined : 60, // seconds
+    }
+  },
+}
+
+const rateLimitHandler = createRateLimitHandler({
+  limiter: rateLimiter,
+  identifierKey: 'userId', // Which context field to use as identifier
+})
+```
+
+### Intent Detection
 
 Hybrid approach combining keyword matching with optional LLM fallback:
 
+**Keyword-based (fast, free):**
+
 ```typescript
+import { IntentClassifier, createIntentHandler } from 'ai-pipeline-orchestrator'
+
 const classifier = new IntentClassifier({
   patterns: [
-    { category: 'greeting', keywords: ['hello', 'hi'] },
+    { category: 'greeting', keywords: ['hello', 'hi', 'hey'] },
+    { category: 'help', keywords: ['help', 'support', 'assist'] },
   ],
   metadata: {
-    tones: { greeting: 'friendly' },
+    tones: { greeting: 'friendly', help: 'helpful' },
     requiresAuth: ['admin_action'],
   },
 })
 
+const intentHandler = createIntentHandler({ classifier })
+```
+
+**LLM-based (accurate, requires API):**
+
+```typescript
+import { LLMIntentClassifier } from 'ai-pipeline-orchestrator'
+
 const llmClassifier = new LLMIntentClassifier({
+  provider: 'anthropic',
+  model: 'claude-3-5-haiku-20241022',
+  apiKey: process.env.ANTHROPIC_API_KEY,
   categories: ['greeting', 'help', 'question'],
   categoryDescriptions: {
     greeting: 'User says hello',
     help: 'User needs help',
+    question: 'User asks a question',
   },
 })
+```
 
-const handler = createIntentHandler({
-  classifier,
+**Hybrid (keyword first, LLM fallback):**
+
+```typescript
+const intentHandler = createIntentHandler({
+  classifier, // keyword classifier
   llmFallback: {
     enabled: true,
     classifier: llmClassifier,
@@ -209,43 +277,110 @@ const handler = createIntentHandler({
 })
 ```
 
-### Context Optimization
+### Context Building
 
 Smart context selection based on topics and message position:
 
 ```typescript
+import { ContextOptimizer, createContextHandler } from 'ai-pipeline-orchestrator'
+
 const optimizer = new ContextOptimizer({
   sections: [
     {
       id: 'core',
-      content: 'Core instructions...',
-      alwaysInclude: true,
+      name: 'Core Instructions',
+      content: 'You are a helpful assistant.',
+      alwaysInclude: true, // Always include this section
     },
     {
       id: 'help',
+      name: 'Help Guide',
       content: 'Help documentation...',
-      topics: ['help', 'support'],
+      topics: ['help', 'support'], // Include when intent matches these topics
+    },
+    {
+      id: 'pricing',
+      name: 'Pricing Info',
+      content: 'Pricing details...',
+      topics: ['pricing', 'cost'],
     },
   ],
   strategy: {
-    firstMessage: 'full',      // Full context for first message
-    followUp: 'selective',     // Selective for follow-ups
+    firstMessage: 'full',      // Load all sections for first message
+    followUp: 'selective',     // Load only relevant sections for follow-ups
+  },
+})
+
+const contextHandler = createContextHandler({
+  optimizer,
+  getTopics: (context) => {
+    const intent = context.intent as { intent?: string }
+    return intent?.intent ? [intent.intent] : []
+  },
+})
+```
+
+### AI Generation
+
+Non-streaming generation:
+
+```typescript
+import { createAIHandler } from 'ai-pipeline-orchestrator'
+
+const aiHandler = createAIHandler({
+  provider: 'anthropic',
+  model: 'claude-3-5-sonnet-20241022',
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  temperature: 0.7,
+  maxTokens: 1024,
+  getSystemPrompt: (context) => {
+    // Build dynamic system prompt from context
+    const promptContext = context.promptContext as { systemPrompt?: string }
+    return promptContext?.systemPrompt || 'You are a helpful assistant.'
+  },
+})
+```
+
+Streaming generation:
+
+```typescript
+import { createStreamingAIHandler } from 'ai-pipeline-orchestrator'
+
+const streamingHandler = createStreamingAIHandler({
+  provider: 'anthropic',
+  model: 'claude-3-5-sonnet-20241022',
+  apiKey: process.env.ANTHROPIC_API_KEY,
+  onChunk: (chunk) => {
+    // Send to client via SSE, WebSocket, etc.
+    sendToClient(chunk)
   },
 })
 ```
 
 ### Custom Handlers
 
-Create your own handlers:
+Create your own handlers for specific business logic:
 
 ```typescript
 import { OrchestrationHandler } from 'ai-pipeline-orchestrator'
 
-const myHandler: OrchestrationHandler = async (context) => {
-  // Your logic here
+const authHandler: OrchestrationHandler = async (context) => {
+  const userId = context.request.metadata?.userId
+
+  if (!userId) {
+    return {
+      ...context,
+      error: {
+        message: 'Authentication required',
+        statusCode: 401,
+        step: 'auth',
+      },
+    }
+  }
+
   return {
     ...context,
-    myData: 'processed',
+    user: await fetchUser(userId),
   }
 }
 ```
@@ -265,7 +400,7 @@ import {
   createAIHandler,
 } from 'ai-pipeline-orchestrator'
 
-// Setup classifiers and optimizers (see Core Concepts below)
+// Setup handlers (see Handler Configuration Guide for full details)
 const intentClassifier = new IntentClassifier({
   patterns: [
     { category: 'greeting', keywords: ['hello', 'hi', 'hey'] },
@@ -280,7 +415,7 @@ const contextOptimizer = new ContextOptimizer({
   ],
 })
 
-// Execute full pipeline
+// Execute pipeline
 const context = {
   request: {
     messages: [{ role: 'user', content: 'Hello!' }],
@@ -343,9 +478,18 @@ if (result.success) {
 
 ## Examples
 
-- [`examples/basic-chatbot.ts`](./examples/basic-chatbot.ts) - Basic orchestration without AI
-- [`examples/complete-chatbot.ts`](./examples/complete-chatbot.ts) - Complete end-to-end with AI generation
-- [`examples/streaming-chatbot.ts`](./examples/streaming-chatbot.ts) - Streaming responses in real-time
+See the `examples/` directory for complete working examples:
+
+- **[`basic-chatbot.ts`](./examples/basic-chatbot.ts)** - Simple pipeline without AI (moderation + intent + context)
+- **[`complete-chatbot.ts`](./examples/complete-chatbot.ts)** - End-to-end with AI generation
+- **[`streaming-chatbot.ts`](./examples/streaming-chatbot.ts)** - Real-time streaming responses
+- **[`all-handlers.ts`](./examples/all-handlers.ts)** - Production pipeline using ALL handlers (rate limiting, moderation, intent, context, AI)
+
+Run any example:
+
+```bash
+npx tsx examples/all-handlers.ts
+```
 
 ## API Reference
 
