@@ -58,7 +58,13 @@ npm install ollama-ai-provider ai
 
 ## Provider Configuration
 
-The package supports multiple LLM providers for intent classification and AI generation:
+The package supports multiple LLM providers for intent classification and AI generation.
+
+**Available Providers:**
+```typescript
+import type { AIProvider } from 'ai-pipeline-orchestrator'
+// 'anthropic' | 'openai' | 'deepseek' | 'ollama'
+```
 
 ### Anthropic (Claude)
 

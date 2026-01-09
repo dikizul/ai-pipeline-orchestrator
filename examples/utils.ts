@@ -1,13 +1,12 @@
 /**
  * Shared utilities for examples
  */
-
-export type ProviderType = 'anthropic' | 'openai' | 'deepseek' | 'ollama'
+import type { AIProvider } from '../src'
 
 export interface EnvConfig {
-  aiProvider: ProviderType
+  aiProvider: AIProvider
   aiModel: string
-  intentProvider: ProviderType
+  intentProvider: AIProvider
   intentModel: string
 }
 
@@ -17,9 +16,9 @@ export interface ProviderCredentials {
 }
 
 export function getEnvConfig(): EnvConfig {
-  const aiProvider = process.env.AI_PROVIDER as ProviderType
+  const aiProvider = process.env.AI_PROVIDER as AIProvider
   const aiModel = process.env.AI_MODEL
-  const intentProvider = (process.env.INTENT_PROVIDER ?? aiProvider) as ProviderType
+  const intentProvider = (process.env.INTENT_PROVIDER ?? aiProvider) as AIProvider
   const intentModel = process.env.INTENT_MODEL ?? aiModel
 
   if (!aiProvider) {
@@ -48,7 +47,7 @@ export function getEnvConfig(): EnvConfig {
   }
 }
 
-export function getProviderCredentials(provider: ProviderType): ProviderCredentials {
+export function getProviderCredentials(provider: AIProvider): ProviderCredentials {
   let apiKey: string | undefined
   let baseURL: string | undefined
 
@@ -80,8 +79,8 @@ export function getProviderCredentials(provider: ProviderType): ProviderCredenti
   return { apiKey, baseURL }
 }
 
-export function getSimpleEnvConfig(): { provider: ProviderType; model: string } {
-  const provider = process.env.AI_PROVIDER as ProviderType
+export function getSimpleEnvConfig(): { provider: AIProvider; model: string } {
+  const provider = process.env.AI_PROVIDER as AIProvider
   const model = process.env.AI_MODEL
 
   if (!provider) {

@@ -1,5 +1,7 @@
+export type AIProvider = 'anthropic' | 'openai' | 'deepseek' | 'ollama'
+
 export interface ProviderConfig {
-  provider: 'anthropic' | 'openai' | 'ollama' | 'deepseek'
+  provider: AIProvider
   model: string
   apiKey?: string
   baseURL?: string
