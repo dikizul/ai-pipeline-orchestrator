@@ -43,9 +43,9 @@ export function createAIHandler(config: AIHandlerConfig): OrchestrationHandler {
       const response = await generateText({
         model: anthropic(config.model),
         system: systemPrompt,
-        messages: context.request.messages,
-        maxTokens: config.maxTokens,
-        temperature: config.temperature,
+        messages: context.request.messages as any,
+        ...(config.maxTokens && { maxTokens: config.maxTokens }),
+        ...(config.temperature !== undefined && { temperature: config.temperature }),
       })
 
       const duration = Date.now() - startTime

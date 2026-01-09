@@ -17,6 +17,10 @@ export interface OrchestratorConfig {
   includeErrorDetails?: boolean
 }
 
+/**
+ * Execute the orchestration pipeline.
+ * Runs handlers sequentially, stops immediately if any handler sets context.error or throws.
+ */
 export async function executeOrchestration(
   context: OrchestrationContext,
   steps: OrchestrationStep[],
@@ -153,12 +157,10 @@ export async function executeOrchestration(
   }
 }
 
-export function createCustomOrchestration(
-  steps: OrchestrationStep[]
-): OrchestrationStep[] {
-  return steps
-}
-
+/**
+ * Class-based orchestrator for stateful pipeline management.
+ * Alternative to functional executeOrchestration API.
+ */
 export class Orchestrator {
   private config: OrchestratorConfig
   private steps: OrchestrationStep[]

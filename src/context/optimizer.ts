@@ -1,6 +1,6 @@
 import type { ContextConfig, ContextResult, ContextSection } from './types'
 
-export function buildContext(
+function buildContext(
   topics: string[],
   isFirstMessage: boolean,
   config: ContextConfig

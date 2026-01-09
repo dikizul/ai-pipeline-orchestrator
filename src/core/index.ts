@@ -1,9 +1,5 @@
-/**
- * Core orchestration exports
- */
 export {
   executeOrchestration,
-  createCustomOrchestration,
   Orchestrator,
   type OrchestratorConfig,
 } from './orchestrator'

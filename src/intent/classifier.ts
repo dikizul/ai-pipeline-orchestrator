@@ -1,6 +1,6 @@
 import type { IntentConfig, IntentPattern, IntentResult } from './types'
 
-export function detectIntent(
+function detectIntent(
   message: string,
   config: IntentConfig
 ): IntentResult {

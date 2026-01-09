@@ -9,7 +9,7 @@ export interface LLMClassifierConfig {
   apiKey?: string
 }
 
-export async function classifyWithLLM(
+async function classifyWithLLM(
   message: string,
   config: LLMClassifierConfig
 ): Promise<{
