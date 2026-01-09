@@ -88,7 +88,7 @@ async function main() {
       name: 'streaming-ai',
       handler: createStreamingAIHandler({
         provider,
-        model,
+        model: model as string,
         apiKey,
         baseURL,
         getSystemPrompt: () => 'You are a creative storyteller. Keep your story brief (2-3 sentences).',

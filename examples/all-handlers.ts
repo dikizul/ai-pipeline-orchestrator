@@ -186,7 +186,7 @@ async function main() {
 
   const llmClassifier = new LLMIntentClassifier({
     provider: intentProvider,
-    model: intentModel,
+    model: intentModel as string,
     apiKey: intentConfig.apiKey,
     baseURL: intentConfig.baseURL,
     categories: ['greeting', 'help', 'pricing', 'technical', 'general'],
@@ -254,7 +254,7 @@ async function main() {
         name: 'ai',
         handler: createAIHandler({
           provider: aiProvider,
-          model: aiModel,
+          model: aiModel as string,
           apiKey: aiConfig.apiKey,
           baseURL: aiConfig.baseURL,
           temperature: 0.7,

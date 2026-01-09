@@ -151,7 +151,7 @@ async function main() {
         name: 'ai',
         handler: createAIHandler({
           provider,
-          model,
+          model: model as string,
           apiKey,
           baseURL,
           temperature: 0.7,
