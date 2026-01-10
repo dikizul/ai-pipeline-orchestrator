@@ -8,7 +8,7 @@
  * ✅ Rate Limiting - Prevents abuse (demo: 10 requests/minute)
  * ✅ Hybrid Intent Classification - Keyword matching with LLM fallback
  * ✅ Dynamic Context Optimization - Loads only relevant context (30-50% token savings)
- * ✅ Multi-Provider Support - Works with Anthropic, OpenAI, DeepSeek, Ollama
+ * ✅ Multi-Provider Support - Works with Anthropic, OpenAI, Ollama
  * ✅ Real-Time Streaming - Fast, responsive AI responses
  * ✅ Token Usage Tracking - See exactly what you're using
  *
@@ -204,14 +204,23 @@ function showHelp() {
 function showHistory(messages: Message[]) {
   if (messages.length === 0) {
     console.log()
-    console.log(`${colors.gray}No conversation history yet${colors.reset}`)
+    console.log(`${colors.dim}╭${'─'.repeat(68)}╮${colors.reset}`)
+    console.log(
+      `${colors.dim}│${colors.reset} ${colors.gray}No conversation history yet${colors.reset}`.padEnd(
+        70
+      ) + `${colors.dim}│${colors.reset}`
+    )
+    console.log(`${colors.dim}╰${'─'.repeat(68)}╯${colors.reset}`)
     console.log()
     return
   }
 
   console.log()
-  console.log(`${colors.bright}Conversation History (${messages.length} messages):${colors.reset}`)
+  console.log(
+    `${colors.bright}📝 Conversation History${colors.reset} ${colors.dim}(${messages.length} messages)${colors.reset}`
+  )
   console.log()
+  console.log(`${colors.dim}╭${'─'.repeat(68)}╮${colors.reset}`)
 
   messages.forEach((msg, idx) => {
     const label =
@@ -219,11 +228,19 @@ function showHistory(messages: Message[]) {
         ? `${colors.cyan}You${colors.reset}`
         : `${colors.magenta}Bot${colors.reset}`
 
-    const content = msg.content.length > 100 ? msg.content.substring(0, 100) + '...' : msg.content
+    const contentText = typeof msg.content === 'string' ? msg.content : '[multipart message]'
+    const content = contentText.length > 80 ? contentText.substring(0, 80) + '...' : contentText
 
-    console.log(`${colors.gray}${idx + 1}.${colors.reset} ${label}: ${content}`)
+    console.log(
+      `${colors.dim}│${colors.reset} ${colors.gray}${(idx + 1).toString().padStart(2)}${colors.reset}. ${label}: ${content}`
+    )
+
+    if (idx < messages.length - 1) {
+      console.log(`${colors.dim}│${colors.reset}`)
+    }
   })
 
+  console.log(`${colors.dim}╰${'─'.repeat(68)}╯${colors.reset}`)
   console.log()
 }
 
@@ -232,51 +249,47 @@ function showHeader(aiProvider: string, aiModel: string, classifierProvider?: st
     `${colors.bright}${colors.blue}╔══════════════════════════════════════════════════════════════════╗${colors.reset}`
   )
   console.log(
-    `${colors.bright}${colors.blue}║  🤖 AI Pipeline Orchestrator - Ultimate Demo                     ║${colors.reset}`
+    `${colors.bright}${colors.blue}║  🤖 AI Pipeline Orchestrator - Interactive Demo                  ║${colors.reset}`
   )
   console.log(
     `${colors.bright}${colors.blue}╚══════════════════════════════════════════════════════════════════╝${colors.reset}`
   )
   console.log()
   console.log(
-    `${colors.gray}Chat Provider: ${colors.bright}${aiProvider}${colors.reset}${colors.gray} | Model: ${colors.bright}${aiModel}${colors.reset}`
+    `${colors.dim}Chat:${colors.reset}   ${colors.bright}${aiProvider}${colors.reset} ${colors.dim}•${colors.reset} ${aiModel}`
   )
   if (classifierProvider) {
     console.log(
-      `${colors.gray}Intent Classifier: ${colors.bright}${classifierProvider}${colors.reset}${colors.gray} (Hybrid: keyword → LLM fallback)${colors.reset}`
+      `${colors.dim}Intent:${colors.reset} ${colors.bright}${classifierProvider}${colors.reset} ${colors.dim}(hybrid: keyword → LLM fallback)${colors.reset}`
     )
   } else {
-    console.log(
-      `${colors.gray}Intent Classifier: ${colors.bright}Keyword-only${colors.reset}${colors.gray} (upgrade with LLM fallback available)${colors.reset}`
-    )
+    console.log(`${colors.dim}Intent:${colors.reset} ${colors.bright}Keyword-only${colors.reset}`)
   }
   console.log()
-  console.log(`${colors.bright}${colors.green}✅ Features Active:${colors.reset}`)
+  console.log(`${colors.bright}${colors.green}✅ Active Features${colors.reset}`)
+  console.log()
   console.log(
-    `${colors.gray}   • Content Moderation ${colors.reset}${colors.dim}(blocks spam/inappropriate)${colors.reset}`
+    `   ${colors.green}✓${colors.reset} Content Moderation      ${colors.dim}blocks spam/inappropriate content${colors.reset}`
   )
   console.log(
-    `${colors.gray}   • Rate Limiting ${colors.reset}${colors.dim}(10 requests/minute)${colors.reset}`
+    `   ${colors.green}✓${colors.reset} Rate Limiting           ${colors.dim}10 requests per minute${colors.reset}`
   )
   console.log(
-    `${colors.gray}   • Intent Classification ${colors.reset}${colors.dim}(5 categories)${colors.reset}`
+    `   ${colors.green}✓${colors.reset} Intent Classification   ${colors.dim}5 categories with hybrid detection${colors.reset}`
   )
   console.log(
-    `${colors.gray}   • Context Optimization ${colors.reset}${colors.dim}(30-50% token savings)${colors.reset}`
+    `   ${colors.green}✓${colors.reset} Context Optimization    ${colors.dim}30-50% token savings${colors.reset}`
   )
   console.log(
-    `${colors.gray}   • Real-Time Streaming ${colors.reset}${colors.dim}(fast responses)${colors.reset}`
-  )
-  console.log(
-    `${colors.gray}   • Token Usage Tracking ${colors.reset}${colors.dim}(see what you use)${colors.reset}`
+    `   ${colors.green}✓${colors.reset} Real-Time Streaming     ${colors.dim}fast, responsive AI responses${colors.reset}`
   )
   console.log()
   console.log(
-    `${colors.bright}${colors.cyan}💡 Try these:${colors.reset} ${colors.dim}"Hello!" • "I need help" • "What's the weather?"${colors.reset}`
+    `${colors.bright}${colors.cyan}💡 Try:${colors.reset} ${colors.dim}"Hello!" • "I need help" • "What's the weather?"${colors.reset}`
   )
   console.log()
   console.log(
-    `${colors.gray}Commands: ${colors.cyan}/clear${colors.gray} • ${colors.cyan}/history${colors.gray} • ${colors.cyan}/help${colors.gray} • ${colors.cyan}/exit${colors.reset}`
+    `${colors.dim}Commands: ${colors.cyan}/clear${colors.dim} • ${colors.cyan}/history${colors.dim} • ${colors.cyan}/help${colors.dim} • ${colors.cyan}/exit${colors.reset}`
   )
   console.log()
 }
@@ -287,26 +300,55 @@ function showMetadata(
   intent: any,
   promptContext: any,
   aiResponse: any,
-  aiProvider: string,
   aiModel: string,
-  intentProvider: string,
   intentModel: string
 ) {
   console.log()
-  console.log(`${colors.dim}${'─'.repeat(70)}${colors.reset}`)
+  console.log(`${colors.dim}╭${'─'.repeat(68)}╮${colors.reset}`)
 
-  // Single-line status indicators
+  // Helper to strip ANSI codes and calculate display width
+  const stripAnsi = (str: string) => str.replace(/\x1b\[[0-9;]*m/g, '')
+  const getDisplayWidth = (str: string) => {
+    const cleaned = stripAnsi(str)
+    let width = 0
+    for (const char of cleaned) {
+      const code = char.codePointAt(0) || 0
+      // Wide characters that take 2 columns (emojis and some symbols)
+      // These are typically rendered as double-width in terminals
+      if (
+        (code >= 0x1f300 && code <= 0x1f9ff) || // Emoji range (🤖 robot, etc)
+        code === 0x26a0 || // ⚠ warning sign
+        code === 0x26a1 // ⚡ lightning bolt
+      ) {
+        width += 2
+      } else {
+        width += 1
+      }
+    }
+    return width
+  }
+  const padLine = (content: string, width: number = 69) => {
+    const contentWidth = getDisplayWidth(content)
+    const padding = Math.max(0, width - contentWidth)
+    return content + ' '.repeat(padding)
+  }
+
+  const lines: string[] = []
+
+  // Moderation & Rate Limit
   const moderationStatus = moderation?.flagged
-    ? `${colors.red}⚠ Flagged${colors.reset}`
-    : `${colors.green}✓ Clean${colors.reset}`
+    ? `${colors.red}⚠  Flagged${colors.reset}`
+    : `${colors.green}✓  Clean${colors.reset}`
   const requestsLeft = 10 - (rateLimit?.currentCount || 1)
-  const rateLimitStatus = `${colors.green}✓${colors.reset} ${colors.dim}${requestsLeft} left${colors.reset}`
+  const rateLimitStatus = `${colors.green}✓${colors.reset} ${requestsLeft}/10 requests`
 
-  console.log(
-    `${colors.dim}Moderation: ${moderationStatus}  •  Rate Limit: ${rateLimitStatus}${colors.reset}`
+  lines.push(
+    padLine(
+      `${colors.dim}│${colors.reset} ${colors.bright}Moderation:${colors.reset} ${moderationStatus}         ${colors.bright}Rate Limit:${colors.reset} ${rateLimitStatus}`
+    )
   )
 
-  // Intent on one line
+  // Intent
   if (intent?.intent) {
     const method = intent.method === 'llm' ? `🤖 ${intentModel}` : '⚡ Keyword'
     const confidenceColor =
@@ -315,21 +357,22 @@ function showMetadata(
         : intent.confidence >= 0.5
           ? colors.yellow
           : colors.red
-    const confidence =
+    const confidenceText =
       intent.confidence !== undefined
-        ? ` ${confidenceColor}${(intent.confidence * 100).toFixed(0)}%${colors.reset}`
-        : ''
-    console.log(
-      `${colors.dim}Intent: ${colors.cyan}${intent.intent}${colors.reset} ${colors.dim}(${method})${confidence}${colors.reset}`
+        ? `${confidenceColor}${(intent.confidence * 100).toFixed(0)}%${colors.reset}`
+        : 'N/A'
+
+    lines.push(
+      padLine(
+        `${colors.dim}│${colors.reset} ${colors.bright}Intent:${colors.reset}     ${colors.cyan}${intent.intent}${colors.reset} ${colors.dim}via${colors.reset} ${method} ${colors.dim}(${confidenceText}${colors.dim})${colors.reset}`
+      )
     )
   }
 
-  // Context optimization - compact
+  // Context optimization
   if (promptContext?.sectionsIncluded?.length > 0) {
-    const sections = promptContext.sectionsIncluded.join(', ')
-    let contextLine = `${colors.dim}Context: ${colors.cyan}${promptContext.sectionsIncluded.length}${colors.reset}${colors.dim}/${promptContext.totalSections || promptContext.sectionsIncluded.length} sections${colors.reset}`
+    const sectionsText = `${colors.cyan}${promptContext.sectionsIncluded.length}${colors.reset}${colors.dim}/${promptContext.totalSections || promptContext.sectionsIncluded.length}${colors.reset} sections`
 
-    // Token savings on same line
     if (promptContext.maxTokenEstimate && promptContext.tokenEstimate) {
       const maxTokens = promptContext.maxTokenEstimate
       const actualTokens = promptContext.tokenEstimate
@@ -337,13 +380,28 @@ function showMetadata(
 
       if (tokensSaved > 0) {
         const percentage = ((tokensSaved / maxTokens) * 100).toFixed(0)
-        contextLine += ` ${colors.green}→ ${percentage}% saved${colors.reset} ${colors.dim}(${actualTokens}/${maxTokens} tokens)${colors.reset}`
+        lines.push(
+          padLine(
+            `${colors.dim}│${colors.reset} ${colors.bright}Context:${colors.reset}    ${sectionsText} ${colors.green}→ ${percentage}% saved${colors.reset} ${colors.dim}(${actualTokens}/${maxTokens} tokens)${colors.reset}`
+          )
+        )
+      } else {
+        lines.push(
+          padLine(
+            `${colors.dim}│${colors.reset} ${colors.bright}Context:${colors.reset}    ${sectionsText}`
+          )
+        )
       }
+    } else {
+      lines.push(
+        padLine(
+          `${colors.dim}│${colors.reset} ${colors.bright}Context:${colors.reset}    ${sectionsText}`
+        )
+      )
     }
-    console.log(contextLine)
   }
 
-  // Tokens - compact view with models
+  // Tokens
   const classificationMethod = intent?.method || 'keyword'
   const classificationTokens = intent?.llmTokens || intent?.usage?.totalTokens || 0
 
@@ -354,19 +412,23 @@ function showMetadata(
     const totalChatTokens = usage.totalTokens ?? promptTokens + completionTokens
     const grandTotal = classificationTokens + totalChatTokens
 
-    // One line token summary with model info
-    let tokenLine = `${colors.dim}Tokens: ${colors.bright}${grandTotal}${colors.reset}`
-
     if (classificationMethod === 'llm') {
-      tokenLine += ` ${colors.dim}(${colors.yellow}${classificationTokens}${colors.reset}${colors.dim} ${intentModel} + ${colors.blue}${totalChatTokens}${colors.reset}${colors.dim} ${aiModel})${colors.reset}`
+      lines.push(
+        padLine(
+          `${colors.dim}│${colors.reset} ${colors.bright}Tokens:${colors.reset}     ${colors.bright}${grandTotal.toLocaleString()}${colors.reset} ${colors.dim}total${colors.reset} ${colors.dim}(${colors.yellow}${classificationTokens}${colors.reset} ${colors.dim}intent +${colors.reset} ${colors.blue}${totalChatTokens}${colors.reset} ${colors.dim}chat)${colors.reset}`
+        )
+      )
     } else {
-      tokenLine += ` ${colors.dim}(${colors.green}0${colors.reset}${colors.dim} keyword + ${colors.blue}${totalChatTokens}${colors.reset}${colors.dim} ${aiModel})${colors.reset}`
+      lines.push(
+        padLine(
+          `${colors.dim}│${colors.reset} ${colors.bright}Tokens:${colors.reset}     ${colors.bright}${grandTotal.toLocaleString()}${colors.reset} ${colors.dim}total${colors.reset} ${colors.dim}(${colors.green}0${colors.reset} ${colors.dim}intent +${colors.reset} ${colors.blue}${totalChatTokens}${colors.reset} ${colors.dim}chat)${colors.reset}`
+        )
+      )
     }
-
-    console.log(tokenLine)
   }
 
-  console.log(`${colors.dim}${'─'.repeat(70)}${colors.reset}`)
+  lines.forEach(line => console.log(line + `${colors.dim}│${colors.reset}`))
+  console.log(`${colors.dim}╰${'─'.repeat(68)}╯${colors.reset}`)
 }
 
 async function chat() {
@@ -476,10 +538,16 @@ async function chat() {
       },
     }
 
-    // Show "thinking" indicator
-    process.stdout.write(
-      `\n${colors.magenta}Bot${colors.reset} > ${colors.dim}Thinking...${colors.reset}`
-    )
+    // Show animated "thinking" indicator
+    const spinnerFrames = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏']
+    let spinnerIndex = 0
+    process.stdout.write(`\n${colors.magenta}Bot${colors.reset} > `)
+    const spinnerInterval = setInterval(() => {
+      process.stdout.write(
+        `\r${colors.magenta}Bot${colors.reset} > ${colors.cyan}${spinnerFrames[spinnerIndex]}${colors.reset} ${colors.dim}Thinking...${colors.reset}`
+      )
+      spinnerIndex = (spinnerIndex + 1) % spinnerFrames.length
+    }, 80)
 
     let isFirstChunk = true
 
@@ -564,8 +632,9 @@ async function chat() {
                 return systemPrompt
               },
               onChunk: chunk => {
-                // Clear "thinking" line on first chunk
+                // Clear spinner and "thinking" line on first chunk
                 if (isFirstChunk) {
+                  clearInterval(spinnerInterval)
                   readline.clearLine(process.stdout, 0)
                   readline.cursorTo(process.stdout, 0)
                   process.stdout.write(`${colors.magenta}Bot${colors.reset} > `)
@@ -593,14 +662,13 @@ async function chat() {
             result.context.intent,
             result.context.promptContext,
             aiResponse,
-            aiProvider,
             aiModel,
-            intentProvider,
             intentModel
           )
         }
       } else {
-        // Clear "thinking" line on error
+        // Clear spinner and "thinking" line on error
+        clearInterval(spinnerInterval)
         readline.clearLine(process.stdout, 0)
         readline.cursorTo(process.stdout, 0)
         console.log(`${colors.red}❌ Error: ${result.error?.message}${colors.reset}`)
@@ -610,7 +678,8 @@ async function chat() {
         messages.pop() // Remove failed message
       }
     } catch (error) {
-      // Clear "thinking" line on exception
+      // Clear spinner and "thinking" line on exception
+      clearInterval(spinnerInterval)
       readline.clearLine(process.stdout, 0)
       readline.cursorTo(process.stdout, 0)
       console.log(

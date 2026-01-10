@@ -1,8 +1,27 @@
+<div align="center">
+
 # AI Pipeline Orchestrator
 
-![Demo](./assets/demo-image.png)
-
 Build production-ready AI chatbots with composable handler pipelines. Handles intent detection, context optimization, token management, rate limiting, and moderation out of the box.
+
+[![npm version](https://img.shields.io/npm/v/ai-pipeline-orchestrator.svg)](https://www.npmjs.com/package/ai-pipeline-orchestrator)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg)](https://www.typescriptlang.org/)
+
+</div>
+
+---
+
+<p align="center">
+  <img src="./assets/demo.gif" alt="AI Pipeline Orchestrator Demo" width="900">
+</p>
+
+<p align="center">
+  <em>Interactive CLI demo showcasing hybrid intent detection, context optimization, and real-time streaming</em><br>
+  <a href="#demo-screenshots">View detailed screenshot</a>
+</p>
+
+---
 
 ## Features
 
@@ -368,6 +387,7 @@ npm run example:chat
 ```
 
 The demo showcases all features in real-time:
+
 - Content moderation
 - Rate limiting
 - Hybrid intent classification
@@ -423,6 +443,19 @@ Check out the [examples](./examples) directory:
 - [`complete-chatbot.ts`](./examples/complete-chatbot.ts) - All features combined
 - [`streaming-chatbot.ts`](./examples/streaming-chatbot.ts) - Streaming responses
 - [`chat-cli.ts`](./examples/chat-cli.ts) - Interactive CLI demo
+
+### Demo Screenshots
+
+<details>
+<summary>📸 Click to see detailed CLI output</summary>
+
+<p align="center">
+  <img src="./assets/demo_image.png" alt="CLI Demo Screenshot" width="800">
+</p>
+
+*The interactive CLI displays real-time metadata including moderation status, rate limits, intent classification, context optimization savings, and token usage for full transparency.*
+
+</details>
 
 ## Contributing
 
